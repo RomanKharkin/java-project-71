@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.util.Map;
 
 public class JsonToMapMapper {
-    public static Map<String, Object> convert(String content) throws IOException, JsonParseException, JsonMappingException {
+    public static Map<String, Object> convert(
+            String content) throws IOException, JsonParseException, JsonMappingException {
         ObjectMapper mapper = new ObjectMapper();
 
         return mapper.readValue(content, Map.class);

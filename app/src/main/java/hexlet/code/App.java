@@ -9,3 +9,4 @@ class App {
         System.exit(exitCode);
     }
 }
+
