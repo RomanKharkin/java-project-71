@@ -7,14 +7,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Differ {
+    private static Parser parser = new YmlParser();
 
     public static String generate(Path filePath1, Path filePath2) throws Exception {
-
         String fileContent1 = getFileContent(filePath1);
-        var map1 = JsonToMapMapper.convert(fileContent1);
+        var map1 = parser.parse(fileContent1);
 
         String fileContent2 = getFileContent(filePath2);
-        var map2 = JsonToMapMapper.convert(fileContent2);
+        var map2 = parser.parse(fileContent2);
 
         Map<String, PairOfValues> resultMap = new HashMap();
         map1.keySet().stream().forEach((key) -> {

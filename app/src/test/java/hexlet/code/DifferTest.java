@@ -20,17 +20,17 @@ class DifferTest {
     void setUp() {
         ClassLoader classLoader = getClass().getClassLoader();
 
-        String resourceName1 = "file1.json";
+        String resourceName1 = "fileY1.yml";
         File file1 = new File(classLoader.getResource(resourceName1).getFile());
         path1 = Path.of(file1.getPath());
 
-        String resourceName2 = "file2.json";
+        String resourceName2 = "fileY2.yml";
         File file2 = new File(classLoader.getResource(resourceName2).getFile());
         path2 = Path.of(file2.getPath());
     }
 
     @Test
-    @DisplayName("getFileContent должен бросить исключение если файла нет")
+    @DisplayName("generate сравнивает результат с правильным файлом")
     void shouldCorrectGeneratePatch() {
         try {
             var actualPatch = Differ.generate(path1, path2);
