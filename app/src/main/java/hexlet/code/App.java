@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import hexlet.code.runner.CommandLineRunner;
 import picocli.CommandLine;
 
 class App {

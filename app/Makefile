@@ -1,5 +1,5 @@
 run-dist:
-	./build/install/app/bin/app
+	./build/install/app/bin/app -h
 
 install:
 	./gradlew clean install
@@ -12,6 +12,6 @@ run-install-mock-j:
 
 run-install-mock-y:
 	./gradlew clean install
-	./build/install/app/bin/app "/home/roman/java-project-71/app/src/main/java/hexlet/code/fileY1.yml" "/home/roman/java-project-71/app/src/main/java/hexlet/code/fileY2.yml"
+	./build/install/app/bin/app  "/home/roman/java-project-71/app/src/main/java/hexlet/code/fileY1.yml" "/home/roman/java-project-71/app/src/main/java/hexlet/code/fileY2.yml"
 
 .PHONY: build

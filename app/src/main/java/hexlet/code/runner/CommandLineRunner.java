@@ -1,5 +1,7 @@
-package hexlet.code;
+package hexlet.code.runner;
 
+import hexlet.code.Differ;
+import hexlet.code.formatters.Formatter;
 import picocli.CommandLine;
 
 import java.nio.file.Path;
@@ -17,14 +19,17 @@ public class CommandLineRunner implements Runnable {
 
     @CommandLine.Option(names = {"-f", "--format"},
                         paramLabel = "format",
-                        description = "output format [default: stylish]")
-    static String format = "string";
+                        defaultValue = "stylish",
+                        description = "output format [default: stylish]",
+                        converter = FormatterConverter.class)
+    static Formatter formatter;
 
 
     @Override
     public void run() {
         String diff = null;
         try {
+            Differ.setFormatter(formatter);
             diff = Differ.generate(filePath1, filePath2);
         } catch (Exception e) {
             throw new RuntimeException(e);
