@@ -1,14 +1,11 @@
 package hexlet.code;
 
-import hexlet.code.formatters.PlainFormatter;
-import hexlet.code.formatters.StylishFormatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.nio.file.Path;
 
 @DisplayName("Тестируем Differ")
 class DifferTest {
@@ -24,21 +21,74 @@ class DifferTest {
                     + "  - setting3: true\n" + "  + setting3: none\n" + "}";
 
 
-    private String expectedPlainPatch = "Property 'chars1' was not changed: [a, b, c]\n"
-            + "Property 'chars2' was updated. From [d, e, f] to false\n"
+    private String expectedPlainPatch = "Property 'chars2' was updated. From [complex value] to false\n"
             + "Property 'checked' was updated. From false to true\n"
-            + "Property 'default' was updated. From null to [value1, value2]\n"
-            + "Property 'id' was updated. From 45 to null\n" + "Property 'key1' was removed\n"
-            + "Property 'key2' was added with value: value2\n" + "Property 'numbers1' was not changed: [1, 2, 3, 4]\n"
-            + "Property 'numbers2' was updated. From [2, 3, 4, 5] to [22, 33, 44, 55]\n"
-            + "Property 'numbers3' was removed\n" + "Property 'numbers4' was added with value: [4, 5, 6]\n"
-            + "Property 'obj1' was added with value: {nestedKey=value, isNested=true}\n"
-            + "Property 'setting1' was updated. From Some value to Another value\n"
+            + "Property 'default' was updated. From null to [complex value]\n"
+            + "Property 'id' was updated. From 45 to null\n"
+            + "Property 'key1' was removed\n"
+            + "Property 'key2' was added with value: 'value2'\n"
+            + "Property 'numbers2' was updated. From [complex value] to [complex value]\n"
+            + "Property 'numbers3' was removed\n"
+            + "Property 'numbers4' was added with value: [complex value]\n"
+            + "Property 'obj1' was added with value: [complex value]\n"
+            + "Property 'setting1' was updated. From 'Some value' to 'Another value'\n"
             + "Property 'setting2' was updated. From 200 to 300\n"
-            + "Property 'setting3' was updated. From true to none";
+            + "Property 'setting3' was updated. From true to 'none'";
 
-    private Path path1;
-    private Path path2;
+    private String expectedJsonPatch = "[{\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"false\",\n"
+            + "  \"path\" : \"chars2\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"true\",\n"
+            + "  \"path\" : \"checked\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"[value1, value2]\",\n"
+            + "  \"path\" : \"default\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"null\",\n"
+            + "  \"path\" : \"id\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"remove\",\n"
+            + "  \"path\" : \"key1\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"add\",\n"
+            + "  \"value\" : \"value2\",\n"
+            + "  \"path\" : \"key2\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"[22, 33, 44, 55]\",\n"
+            + "  \"path\" : \"numbers2\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"remove\",\n"
+            + "  \"path\" : \"numbers3\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"add\",\n"
+            + "  \"value\" : \"[4, 5, 6]\",\n"
+            + "  \"path\" : \"numbers4\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"add\",\n"
+            + "  \"value\" : \"{nestedKey=value, isNested=true}\",\n"
+            + "  \"path\" : \"obj1\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"Another value\",\n"
+            + "  \"path\" : \"setting1\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"300\",\n"
+            + "  \"path\" : \"setting2\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"none\",\n"
+            + "  \"path\" : \"setting3\"\n"
+            + "}]";
+
+    private String path1;
+    private String path2;
 
     @BeforeEach
     void setUp() {
@@ -46,18 +96,17 @@ class DifferTest {
 
         String resourceName1 = "fileY1.yml";
         File file1 = new File(classLoader.getResource(resourceName1).getFile());
-        path1 = Path.of(file1.getPath());
+        path1 = file1.getPath();
 
         String resourceName2 = "fileY2.yml";
         File file2 = new File(classLoader.getResource(resourceName2).getFile());
-        path2 = Path.of(file2.getPath());
+        path2 = file2.getPath();
     }
 
     @Test
     @DisplayName("generate stylish")
     void shouldCorrectGenerateStylishPatch() {
         try {
-            Differ.setFormatter(new StylishFormatter());
             var actualPatch = Differ.generate(path1, path2);
             Assertions.assertEquals(expectedStylishPatch, actualPatch);
         } catch (Exception e) {
@@ -69,9 +118,19 @@ class DifferTest {
     @DisplayName("generate plain")
     void shouldCorrectGeneratePlainPatch() {
         try {
-            Differ.setFormatter(new PlainFormatter());
-            var actualPatch = Differ.generate(path1, path2);
+            var actualPatch = Differ.generate(path1, path2, "plain");
             Assertions.assertEquals(expectedPlainPatch, actualPatch);
+        } catch (Exception e) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    @DisplayName("generate plain")
+    void shouldCorrectGenerateJsonPatch() {
+        try {
+            var actualPatch = Differ.generate(path1, path2, "json");
+            Assertions.assertEquals(expectedJsonPatch, actualPatch);
         } catch (Exception e) {
             Assertions.fail();
         }
@@ -81,7 +140,7 @@ class DifferTest {
     @DisplayName("generate должен бросить исключение если файла нет")
     void shouldThrowExceptionFileNotExist() {
         try {
-            Differ.generate(Path.of("filetNotExisted.json"), path2);
+            Differ.generate("filetNotExisted.json", path2);
             Assertions.fail();
         } catch (Exception e) {
             Assertions.assertTrue(true);

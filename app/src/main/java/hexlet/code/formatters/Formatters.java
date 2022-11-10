@@ -8,6 +8,8 @@ public class Formatters {
                 return new PlainFormatter();
             case "stylish":
                 return new StylishFormatter();
+            case "json":
+                return new JsonFormatter();
             default:
                 throw new Exception("Нет такого формата");
         }

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
 
-public class JsonParser implements Parser {
+public final class JsonParser implements Parser {
 
     public Map<String, Object> parse(String content) throws IOException, JsonParseException, JsonMappingException {
 

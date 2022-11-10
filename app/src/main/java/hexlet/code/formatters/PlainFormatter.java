@@ -1,36 +1,50 @@
 package hexlet.code.formatters;
 
-import hexlet.code.ComparisonSign;
 import hexlet.code.Differ;
+import hexlet.code.Operation;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PlainFormatter implements Formatter {
+public final class PlainFormatter implements Formatter {
     @Override
-    public String format(Map<String, Differ.PairOfValues> resultMap) {
+    public String format(Map<String, Differ.DiffClass> resultMap) {
         String delimiter = "\n";
 
-        var sortedResult = resultMap.keySet().stream().sorted().map((key) -> {
-            Differ.PairOfValues pairOfValues = resultMap.get(key);
-            var value1 = pairOfValues.getValue1();
-            var value2 = pairOfValues.getValue2();
-            ComparisonSign comparisonSign = pairOfValues.getComparisonSign();
+        var sortedResult = resultMap.keySet().stream().sorted().filter((key) -> resultMap.get(key).getOperation()
+                != null).map((key) -> {
+                    Differ.DiffClass diffClass = resultMap.get(key);
+                    var value1 = diffClass.getValue1();
+                    var value2 = diffClass.getValue2();
+                    Operation operation = diffClass.getOperation();
 
-            switch (comparisonSign) {
-                case FIRST_IS_ABSENT:
-                    return "Property " + "'" + key + "'" + " was added with value: " + value2;
-                case SECOND_IS_ABSENT:
-                    return "Property " + "'" + key + "'" + " was removed";
-                case EQUALS:
-                    return "Property " + "'" + key + "'" + " was not changed: " + value1;
-                case NOT_EQUALS:
-                    return "Property " + "'" + key + "'" + " was updated. From " + value1 + " to " + value2;
-                default:
-                    throw new RuntimeException("Непонятно что происходит, неожиданные значения");
-            }
-        }).map((str) -> str).collect(Collectors.joining(delimiter));
+                    switch (operation) {
+                        case ADD:
+                            return "Property " + "'" + key + "'" + " was added with value: " + valueToString(value2);
+                        case REMOVE:
+                            return "Property " + "'" + key + "'" + " was removed";
+                        case REPLACE:
+                            return "Property " + "'" + key + "'" + " was updated. From " + valueToString(value1)
+                                    + " to "
+                                    + valueToString(value2);
+                        default:
+                            throw new RuntimeException("Неизвестная операция");
+                    }
+                }).collect(Collectors.joining(delimiter));
 
         return sortedResult;
+    }
+
+    private String valueToString(Object value) {
+        if (value instanceof Map<?, ?> || value instanceof List<?>) {
+            return "[complex value]";
+        }
+
+        if (value instanceof String) {
+            return "'" + value + "'";
+        }
+
+        return value.toString();
     }
 }

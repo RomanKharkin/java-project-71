@@ -1,0 +1,53 @@
+[{
+  "op" : "replace",
+  "value" : "false",
+  "path" : "chars2"
+}, {
+  "op" : "replace",
+  "value" : "true",
+  "path" : "checked"
+}, {
+  "op" : "replace",
+  "value" : "[value1, value2]",
+  "path" : "default"
+}, {
+  "op" : "replace",
+  "value" : "null",
+  "path" : "id"
+}, {
+  "op" : "remove",
+  "value" : null,
+  "path" : "key1"
+}, {
+  "op" : "add",
+  "value" : "value2",
+  "path" : "key2"
+}, {
+  "op" : "replace",
+  "value" : "[22, 33, 44, 55]",
+  "path" : "numbers2"
+}, {
+  "op" : "remove",
+  "value" : null,
+  "path" : "numbers3"
+}, {
+  "op" : "add",
+  "value" : "[4, 5, 6]",
+  "path" : "numbers4"
+}, {
+  "op" : "add",
+  "value" : "{nestedKey=value, isNested=true}",
+  "path" : "obj1"
+}, {
+  "op" : "replace",
+  "value" : "Another value",
+  "path" : "setting1"
+}, {
+  "op" : "replace",
+  "value" : "300",
+  "path" : "setting2"
+}, {
+  "op" : "replace",
+  "value" : "none",
+  "path" : "setting3"
+}]

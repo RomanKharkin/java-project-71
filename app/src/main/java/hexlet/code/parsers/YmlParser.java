@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import java.io.IOException;
 import java.util.Map;
 
-public class YmlParser implements Parser {
+public final class YmlParser implements Parser {
 
     public Map<String, Object> parse(String content) throws IOException {
 

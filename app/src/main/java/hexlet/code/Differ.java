@@ -1,7 +1,7 @@
 package hexlet.code;
 
 import hexlet.code.formatters.Formatter;
-import hexlet.code.formatters.StylishFormatter;
+import hexlet.code.formatters.Formatters;
 import hexlet.code.parsers.Parser;
 import hexlet.code.parsers.YmlParser;
 
@@ -15,16 +15,21 @@ import java.util.Optional;
 public class Differ {
     private static final NullObject NULL_OBJECT = new NullObject();
     private static Parser parser = new YmlParser();
-    private static Formatter formatter = new StylishFormatter();
 
-    public static String generate(Path filePath1, Path filePath2) throws Exception {
-        String fileContent1 = getFileContent(filePath1);
+    public static String generate(String filePath1, String filePath2) throws Exception {
+        return generate(filePath1, filePath2, "stylish");
+    }
+
+    public static String generate(String filePath1, String filePath2, String formatterName) throws Exception {
+        Formatter formatter = Formatters.formatterFactory(formatterName);
+
+        String fileContent1 = getFileContent(Path.of(filePath1));
         var map1 = parser.parse(fileContent1);
 
-        String fileContent2 = getFileContent(filePath2);
+        String fileContent2 = getFileContent(Path.of(filePath2));
         var map2 = parser.parse(fileContent2);
 
-        Map<String, PairOfValues> resultMap = new HashMap();
+        Map<String, DiffClass> resultMap = new HashMap();
 
         map1.keySet().stream().forEach((key) -> {
             resultMap.putIfAbsent(key, null);
@@ -36,7 +41,7 @@ public class Differ {
         resultMap.keySet().stream().forEach(key -> {
             var value1 = !map1.containsKey(key) ? null : Optional.ofNullable(map1.get(key)).orElse(NULL_OBJECT);
             var value2 = !map2.containsKey(key) ? null : Optional.ofNullable(map2.get(key)).orElse(NULL_OBJECT);
-            resultMap.put(key, new PairOfValues(value1, value2));
+            resultMap.put(key, new DiffClass(value1, value2));
         });
 
         return formatter.format(resultMap);
@@ -55,37 +60,13 @@ public class Differ {
         return content;
     }
 
-    public static void setFormatter(Formatter formatter) {
-        Differ.formatter = formatter;
-    }
+    public static final class DiffClass {
+        private Object value1;
+        private Object value2;
 
-    public static class PairOfSingEndKey {
-
-        String key;
-        String sing;
-
-        PairOfSingEndKey(String sing, String key) {
-            this.sing = sing;
-            this.key = key;
-        }
-
-        public String getSing() {
-            return sing;
-        }
-
-        public String getKey() {
-            return key;
-        }
-    }
-
-
-    public static class PairOfValues {
-        Object value1;
-        Object value2;
-
-        PairOfValues(Object value1, Object value2) {
-            this.value1 = value1;
-            this.value2 = value2;
+        DiffClass(Object value11, Object value22) {
+            value1 = value11;
+            value2 = value22;
         }
 
         public Object getValue1() {
@@ -96,24 +77,20 @@ public class Differ {
             return value2;
         }
 
-        public ComparisonSign getComparisonSign() {
+        public Operation getOperation() {
             if (value1 == null) {
-                return ComparisonSign.FIRST_IS_ABSENT;
+                return Operation.ADD;
             }
 
             if (value2 == null) {
-                return ComparisonSign.SECOND_IS_ABSENT;
-            }
-
-            if (Objects.equals(value1, value2)) {
-                return ComparisonSign.EQUALS;
+                return Operation.REMOVE;
             }
 
             if (!Objects.equals(value1, value2)) {
-                return ComparisonSign.NOT_EQUALS;
+                return Operation.REPLACE;
             }
 
-            throw new RuntimeException("Непонятно что происходит, неожиданные значения");
+            return null;
         };
 
         @Override
