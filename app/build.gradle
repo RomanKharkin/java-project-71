@@ -23,6 +23,8 @@ dependencies {
     implementation 'info.picocli:picocli:4.6.3'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.4'
+    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'org.assertj:assertj-core:3.22.0'
 
 }
 

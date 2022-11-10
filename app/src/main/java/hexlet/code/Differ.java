@@ -59,25 +59,6 @@ public class Differ {
         Differ.formatter = formatter;
     }
 
-    public static class PairOfSingEndKey {
-
-        String key;
-        String sing;
-
-        PairOfSingEndKey(String sing, String key) {
-            this.sing = sing;
-            this.key = key;
-        }
-
-        public String getSing() {
-            return sing;
-        }
-
-        public String getKey() {
-            return key;
-        }
-    }
-
 
     public static class PairOfValues {
         Object value1;
@@ -96,24 +77,20 @@ public class Differ {
             return value2;
         }
 
-        public ComparisonSign getComparisonSign() {
+        public Operation getOperation() {
             if (value1 == null) {
-                return ComparisonSign.FIRST_IS_ABSENT;
+                return Operation.ADD;
             }
 
             if (value2 == null) {
-                return ComparisonSign.SECOND_IS_ABSENT;
-            }
-
-            if (Objects.equals(value1, value2)) {
-                return ComparisonSign.EQUALS;
+                return Operation.REMOVE;
             }
 
             if (!Objects.equals(value1, value2)) {
-                return ComparisonSign.NOT_EQUALS;
+                return Operation.REPLACE;
             }
 
-            throw new RuntimeException("Непонятно что происходит, неожиданные значения");
+            return null;
         };
 
         @Override

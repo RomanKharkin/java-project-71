@@ -1,7 +1,7 @@
 package hexlet.code.formatters;
 
-import hexlet.code.ComparisonSign;
 import hexlet.code.Differ;
+import hexlet.code.Operation;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,21 +15,24 @@ public class PlainFormatter implements Formatter {
             Differ.PairOfValues pairOfValues = resultMap.get(key);
             var value1 = pairOfValues.getValue1();
             var value2 = pairOfValues.getValue2();
-            ComparisonSign comparisonSign = pairOfValues.getComparisonSign();
+            Operation operation = pairOfValues.getOperation();
 
-            switch (comparisonSign) {
-                case FIRST_IS_ABSENT:
+
+            if (operation == null) {
+                return "Property " + "'" + key + "'" + " was not changed: " + value1;
+            }
+
+            switch (operation) {
+                case ADD:
                     return "Property " + "'" + key + "'" + " was added with value: " + value2;
-                case SECOND_IS_ABSENT:
+                case REMOVE:
                     return "Property " + "'" + key + "'" + " was removed";
-                case EQUALS:
-                    return "Property " + "'" + key + "'" + " was not changed: " + value1;
-                case NOT_EQUALS:
+                case REPLACE:
                     return "Property " + "'" + key + "'" + " was updated. From " + value1 + " to " + value2;
                 default:
-                    throw new RuntimeException("Непонятно что происходит, неожиданные значения");
+                    throw new RuntimeException("Неизвестная операция");
             }
-        }).map((str) -> str).collect(Collectors.joining(delimiter));
+        }).collect(Collectors.joining(delimiter));
 
         return sortedResult;
     }

@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import hexlet.code.formatters.JsonFormatter;
 import hexlet.code.formatters.PlainFormatter;
 import hexlet.code.formatters.StylishFormatter;
 import org.junit.jupiter.api.Assertions;
@@ -37,6 +38,58 @@ class DifferTest {
             + "Property 'setting2' was updated. From 200 to 300\n"
             + "Property 'setting3' was updated. From true to none";
 
+    private String expectedJsonPatch = "[{\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"false\",\n"
+            + "  \"path\" : \"chars2\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"true\",\n"
+            + "  \"path\" : \"checked\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"[value1, value2]\",\n"
+            + "  \"path\" : \"default\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"null\",\n"
+            + "  \"path\" : \"id\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"remove\",\n"
+            + "  \"path\" : \"key1\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"add\",\n"
+            + "  \"value\" : \"value2\",\n"
+            + "  \"path\" : \"key2\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"[22, 33, 44, 55]\",\n"
+            + "  \"path\" : \"numbers2\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"remove\",\n"
+            + "  \"path\" : \"numbers3\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"add\",\n"
+            + "  \"value\" : \"[4, 5, 6]\",\n"
+            + "  \"path\" : \"numbers4\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"add\",\n"
+            + "  \"value\" : \"{nestedKey=value, isNested=true}\",\n"
+            + "  \"path\" : \"obj1\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"Another value\",\n"
+            + "  \"path\" : \"setting1\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"300\",\n"
+            + "  \"path\" : \"setting2\"\n"
+            + "}, {\n"
+            + "  \"op\" : \"replace\",\n"
+            + "  \"value\" : \"none\",\n"
+            + "  \"path\" : \"setting3\"\n"
+            + "}]";
+
     private Path path1;
     private Path path2;
 
@@ -72,6 +125,18 @@ class DifferTest {
             Differ.setFormatter(new PlainFormatter());
             var actualPatch = Differ.generate(path1, path2);
             Assertions.assertEquals(expectedPlainPatch, actualPatch);
+        } catch (Exception e) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    @DisplayName("generate plain")
+    void shouldCorrectGenerateJsonPatch() {
+        try {
+            Differ.setFormatter(new JsonFormatter());
+            var actualPatch = Differ.generate(path1, path2);
+            Assertions.assertEquals(expectedJsonPatch, actualPatch);
         } catch (Exception e) {
             Assertions.fail();
         }
