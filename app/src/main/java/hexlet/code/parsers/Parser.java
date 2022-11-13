@@ -1,8 +1,9 @@
 package hexlet.code.parsers;
 
-import java.io.IOException;
+import hexlet.code.exceptions.ParsingFailedException;
+
 import java.util.Map;
 
 public interface Parser {
-    Map<String, Object> parse(String content) throws IOException;
+    Map<String, Object> parse(String content) throws ParsingFailedException;
 }
