@@ -1,43 +1,50 @@
 package hexlet.code.formatters;
 
-import hexlet.code.Differ;
-import hexlet.code.Operation;
+import hexlet.code.differ.DiffEntity;
 
-import java.io.IOException;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
-public final class StylishFormatter implements Formatter {
+public final class StylishFormatter implements Formatter<String> {
+    private final String delimiter = "\n";
 
     @Override
-    public String format(Map<String, Differ.DiffClass> resultMap) throws IOException {
-        String delimiter = "\n";
+    public String getName() {
+        return "stylish";
+    }
+
+    @Override
+    public String add(DiffEntity diffEntity) {
+        return "+ " + diffEntity.getKey() + ": " + diffEntity.getValue2();
+    }
+
+    @Override
+    public String remove(DiffEntity diffEntity) {
+        return "- " + diffEntity.getKey() + ": " + diffEntity.getValue1();
+    }
+
+    @Override
+    public String replace(DiffEntity diffEntity) {
+
+        var val1 = "- " + diffEntity.getKey() + ": " + diffEntity.getValue1();
+        var val2 = "+ " + diffEntity.getKey() + ": " + diffEntity.getValue2();
+        return val1 + delimiter + val2;
+    }
+
+    @Override
+    public String nothing(DiffEntity diffEntity) {
+
+        return "  " + diffEntity.getKey() + ": " + diffEntity.getValue1();
+    }
+
+    @Override
+    public String wrap(List<String> differences) {
         String indentation = "  ";
-
-        var sortedResult = resultMap.keySet().stream().sorted().map((key) -> {
-            Differ.DiffClass diffClass = resultMap.get(key);
-            var value1 = diffClass.getValue1();
-            var value2 = diffClass.getValue2();
-            Operation operation = diffClass.getOperation();
-
-            if (operation == null) {
-                return "  " + key + ": " + value1;
-            }
-
-            switch (operation) {
-                case ADD:
-                    return "+ " + key + ": " + value2;
-                case REMOVE:
-                    return "- " + key + ": " + value1;
-                case REPLACE:
-                    var val1 = "- " + key + ": " + value1;
-                    var val2 = "+ " + key + ": " + value2;
-                    return val1 + delimiter + indentation + val2;
-                default:
-                    throw new RuntimeException("Неизвестная операция");
-            }
-        }).map((str) -> indentation + str).collect(Collectors.joining(delimiter));
-
-        return "{" + delimiter + sortedResult + delimiter + "}";
+        var content = Arrays.stream(
+                                    differences.stream().collect(Collectors.joining(delimiter)).split(delimiter)
+                            )
+                            .collect(Collectors.joining(delimiter + indentation));
+        return "{" + delimiter + indentation + content + delimiter + "}";
     }
 }

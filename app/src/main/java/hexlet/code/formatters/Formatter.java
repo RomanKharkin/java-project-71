@@ -1,10 +1,22 @@
 package hexlet.code.formatters;
 
-import hexlet.code.Differ;
+import hexlet.code.differ.DiffEntity;
+import hexlet.code.exceptions.FormatFailedException;
 
-import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
-public interface Formatter {
-    String format(Map<String, Differ.DiffClass> resultMap) throws IOException;
+public interface Formatter<T extends Object> {
+    String getName();
+
+    T add(DiffEntity diffEntity);
+
+    T remove(DiffEntity diffEntity);
+
+    T replace(DiffEntity diffEntity);
+
+    String wrap(List<T> differences) throws FormatFailedException;
+
+    default T nothing(DiffEntity diffEntity) {
+        return null;
+    }
 }

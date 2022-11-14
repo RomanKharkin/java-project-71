@@ -1,17 +1,27 @@
 package hexlet.code.formatters;
 
-public class Formatters {
+import hexlet.code.exceptions.FormatFailedException;
 
-    public static Formatter formatterFactory(String formatterName) throws Exception {
-        switch (formatterName) {
-            case "plain":
-                return new PlainFormatter();
-            case "stylish":
-                return new StylishFormatter();
-            case "json":
-                return new JsonFormatter();
-            default:
-                throw new Exception("Нет такого формата");
-        }
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+public class Formatters {
+    private static final Map<String, Formatter> formatters = Arrays
+            .stream(new Formatter[]{
+                    new PlainFormatter(),
+                    new StylishFormatter(),
+                    new JsonFormatter()
+            })
+            .collect(Collectors.toMap((formatter) -> formatter.getName(), Function.identity()));
+
+    public static Formatter getFormatterByName(String formatterName) throws FormatFailedException {
+
+        return Optional
+                .ofNullable(formatters.get(formatterName))
+                .orElseThrow(() -> new FormatFailedException("Нет такого формата: " + formatterName));
     }
 }
+

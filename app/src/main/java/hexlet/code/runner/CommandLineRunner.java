@@ -1,12 +1,12 @@
 package hexlet.code.runner;
 
-import hexlet.code.Differ;
+import hexlet.code.differ.Differ;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "gendiff",
-                     mixinStandardHelpOptions = true,
-                     version = "0.0.1",
-                     description = "Compares two configuration files and shows a difference.")
+        mixinStandardHelpOptions = true,
+        version = "0.0.1",
+        description = "Compares two configuration files and shows a difference.")
 public final class CommandLineRunner implements Runnable {
     @CommandLine.Parameters(paramLabel = "filepath1", description = "path to first file")
     private static String filePath1;
@@ -15,9 +15,9 @@ public final class CommandLineRunner implements Runnable {
     private static String filePath2;
 
     @CommandLine.Option(names = {"-f", "--format"},
-                        paramLabel = "format",
-                        defaultValue = "stylish",
-                        description = "output format [default: stylish]")
+            paramLabel = "format",
+            defaultValue = "stylish",
+            description = "output format [default: stylish]")
     private static String formatterName;
 
 

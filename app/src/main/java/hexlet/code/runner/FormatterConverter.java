@@ -8,6 +8,6 @@ import picocli.CommandLine;
 class FormatterConverter implements CommandLine.ITypeConverter<Formatter> {
     public Formatter convert(String formatterName) throws Exception {
 
-        return Formatters.formatterFactory(formatterName);
+        return Formatters.getFormatterByName(formatterName);
     }
 }

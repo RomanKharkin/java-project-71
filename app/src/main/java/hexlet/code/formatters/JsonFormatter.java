@@ -3,53 +3,56 @@ package hexlet.code.formatters;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.Differ;
-import hexlet.code.Operation;
+import hexlet.code.differ.DiffEntity;
+import hexlet.code.exceptions.FormatFailedException;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 
-public final class JsonFormatter implements Formatter {
-    private ObjectMapper objectMapper = new ObjectMapper();
+public final class JsonFormatter implements Formatter<Object> {
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String format(Map<String, Differ.DiffClass> resultMap) throws IOException {
-        String delimiter = "\n";
+    public String getName() {
+        return "json";
+    }
 
-        var sortedResult = resultMap.keySet().stream().sorted().filter((key) -> resultMap.get(key).getOperation()
-                != null).map((key) -> {
-                    Differ.DiffClass diffClass = resultMap.get(key);
-                    var newValue = diffClass.getValue2();
-                    Operation operation = diffClass.getOperation();
+    @Override
+    public Object add(DiffEntity diffEntity) {
 
-                    try {
-                        switch (operation) {
-                            case ADD:
-                                return new PatchObject("add", key, newValue).toJson();
-                            case REMOVE:
-                                return new PatchObject("remove", key).toJson();
-                            case REPLACE:
-                                return new PatchObject("replace", key, newValue).toJson();
-                            default:
-                                throw new RuntimeException("Неизвестная операция");
-                        }
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                }).toArray();
-
-        return Arrays.toString(sortedResult);
+        return new PatchObject("add", diffEntity.getKey(), diffEntity.getValue2());
 
     }
 
-    private class PatchObject {
-        private String op;
+    @Override
+    public Object remove(DiffEntity diffEntity) {
 
+        return new PatchObject("remove", diffEntity.getKey());
+
+    }
+
+    @Override
+    public Object replace(DiffEntity diffEntity) {
+
+        return new PatchObject("replace", diffEntity.getKey(), diffEntity.getValue2());
+    }
+
+    @Override
+    public String wrap(List<Object> differences) throws FormatFailedException {
+        try {
+
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(differences);
+        } catch (JsonProcessingException e) {
+            throw new FormatFailedException("Failed to format", e);
+        }
+    }
+
+
+    private class PatchObject {
+        private final String op;
+        private final String path;
         @JsonInclude(JsonInclude.Include.NON_NULL)
         private String value;
-        private String path;
 
         PatchObject(String op1, String path1, Object value1) {
             op = op1;
@@ -72,10 +75,6 @@ public final class JsonFormatter implements Formatter {
 
         public String getPath() {
             return path;
-        }
-
-        public String toJson() throws JsonProcessingException {
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(PatchObject.this);
         }
     }
 }
