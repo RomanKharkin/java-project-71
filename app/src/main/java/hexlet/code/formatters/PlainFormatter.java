@@ -1,6 +1,6 @@
 package hexlet.code.formatters;
 
-import hexlet.code.Differ;
+import hexlet.code.differ.DiffClass;
 import hexlet.code.Operation;
 
 import java.util.List;
@@ -9,12 +9,12 @@ import java.util.stream.Collectors;
 
 public final class PlainFormatter implements Formatter {
     @Override
-    public String format(Map<String, Differ.DiffClass> resultMap) {
+    public String format(Map<String, DiffClass> resultMap) {
         String delimiter = "\n";
 
         var sortedResult = resultMap.keySet().stream().sorted().filter((key) -> resultMap.get(key).getOperation()
-                != null).map((key) -> {
-                    Differ.DiffClass diffClass = resultMap.get(key);
+                != Operation.UNCHAHGED).map((key) -> {
+                    DiffClass diffClass = resultMap.get(key);
                     var value1 = diffClass.getValue1();
                     var value2 = diffClass.getValue2();
                     Operation operation = diffClass.getOperation();

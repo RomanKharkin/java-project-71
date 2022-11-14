@@ -11,7 +11,7 @@ public class Formatters {
             case "json":
                 return new JsonFormatter();
             default:
-                throw new Exception("Нет такого формата");
+                throw new Exception("Нет такого формата: " + formatterName);
         }
     }
 }

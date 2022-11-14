@@ -3,7 +3,7 @@ package hexlet.code.formatters;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.Differ;
+import hexlet.code.differ.DiffClass;
 import hexlet.code.Operation;
 
 import java.io.IOException;
@@ -15,12 +15,12 @@ public final class JsonFormatter implements Formatter {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String format(Map<String, Differ.DiffClass> resultMap) throws IOException {
+    public String format(Map<String, DiffClass> resultMap) throws IOException {
         String delimiter = "\n";
 
         var sortedResult = resultMap.keySet().stream().sorted().filter((key) -> resultMap.get(key).getOperation()
-                != null).map((key) -> {
-                    Differ.DiffClass diffClass = resultMap.get(key);
+                != Operation.UNCHAHGED).map((key) -> {
+                    DiffClass diffClass = resultMap.get(key);
                     var newValue = diffClass.getValue2();
                     Operation operation = diffClass.getOperation();
 
