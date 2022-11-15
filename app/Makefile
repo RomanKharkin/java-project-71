@@ -6,6 +6,10 @@ install:
 
 run-install-dist: install run-dist
 
+report:
+	./gradlew jacocoTestReport
+
+
 run-install-mock-j-p:
 	./gradlew clean install
 	./build/install/app/bin/app -f plain "./src/main/resources/file1.json" "./src/main/resources/file2.json"
