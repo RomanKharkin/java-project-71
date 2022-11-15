@@ -1,4 +1,4 @@
-[{
+[ {
   "op" : "replace",
   "value" : "false",
   "path" : "chars2"
@@ -48,4 +48,4 @@
   "op" : "replace",
   "value" : "none",
   "path" : "setting3"
-}]
+} ]

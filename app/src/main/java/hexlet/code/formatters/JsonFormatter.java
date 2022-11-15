@@ -1,14 +1,13 @@
 package hexlet.code.formatters;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.differ.DiffClass;
 import hexlet.code.Operation;
+import hexlet.code.differ.DiffClass;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public final class JsonFormatter implements Formatter {
@@ -24,23 +23,19 @@ public final class JsonFormatter implements Formatter {
                     var newValue = diffClass.getValue2();
                     Operation operation = diffClass.getOperation();
 
-                    try {
-                        switch (operation) {
-                            case ADD:
-                                return new PatchObject("add", key, newValue).toJson();
-                            case REMOVE:
-                                return new PatchObject("remove", key).toJson();
-                            case REPLACE:
-                                return new PatchObject("replace", key, newValue).toJson();
-                            default:
-                                throw new RuntimeException("Неизвестная операция");
-                        }
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
+                    switch (operation) {
+                        case ADD:
+                            return new PatchObject("add", key, newValue);
+                        case REMOVE:
+                            return new PatchObject("remove", key);
+                        case REPLACE:
+                            return new PatchObject("replace", key, newValue);
+                        default:
+                            throw new RuntimeException("Неизвестная операция");
                     }
-                }).toArray();
+                }).collect(Collectors.toList());
 
-        return Arrays.toString(sortedResult);
+        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(sortedResult);
 
     }
 
@@ -72,10 +67,6 @@ public final class JsonFormatter implements Formatter {
 
         public String getPath() {
             return path;
-        }
-
-        public String toJson() throws JsonProcessingException {
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(PatchObject.this);
         }
     }
 }
