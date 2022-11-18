@@ -46,9 +46,21 @@ class DifferTest {
 
     }
 
+
     @Test
     @DisplayName("generate stylish")
-    void shouldCorrectGenerateStylishPatchY() {
+    void shouldCorrectGenerateDefaultPatchYml() {
+        try {
+            var actualPatch = Differ.generate(pathYml1, pathYml2);
+            Assertions.assertEquals(resultStylish, actualPatch);
+        } catch (Exception e) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    @DisplayName("generate stylish")
+    void shouldCorrectGenerateStylishPatchYml() {
         try {
             var actualPatch = Differ.generate(pathYml1, pathYml2, "stylish");
             Assertions.assertEquals(resultStylish, actualPatch);
@@ -59,7 +71,7 @@ class DifferTest {
 
     @Test
     @DisplayName("generate plain")
-    void shouldCorrectGeneratePlainPatchY() {
+    void shouldCorrectGeneratePlainPatchYml() {
         try {
             var actualPatch = Differ.generate(pathYml1, pathYml2, "plain");
             Assertions.assertEquals(resultPlain, actualPatch);
@@ -70,7 +82,7 @@ class DifferTest {
 
     @Test
     @DisplayName("generate json")
-    void shouldCorrectGenerateJsonPatchY() {
+    void shouldCorrectGenerateJsonPatchYml() {
         try {
             var actualPatch = Differ.generate(pathYml1, pathYml2, "json");
             Assertions.assertEquals(resultJson, actualPatch);
@@ -80,20 +92,19 @@ class DifferTest {
     }
 
     @Test
-    @DisplayName("generate должен бросить исключение если файла нет")
-    void shouldThrowExceptionFileNotExistY() {
+    @DisplayName("generate stylish")
+    void shouldCorrectGenerateDefaultPatchJson() {
         try {
-            Differ.generate("filetNotExisted.json", pathYml2);
-            Assertions.fail();
+            var actualPatch = Differ.generate(pathJson1, pathJson2);
+            Assertions.assertEquals(resultStylish, actualPatch);
         } catch (Exception e) {
-            Assertions.assertTrue(true);
+            Assertions.fail();
         }
     }
 
-
     @Test
     @DisplayName("generate stylish")
-    void shouldCorrectGenerateStylishPatchJ() {
+    void shouldCorrectGenerateStylishPatchJson() {
         try {
             var actualPatch = Differ.generate(pathJson1, pathJson2, "stylish");
             Assertions.assertEquals(resultStylish, actualPatch);
@@ -104,7 +115,7 @@ class DifferTest {
 
     @Test
     @DisplayName("generate plain")
-    void shouldCorrectGeneratePlainPatchJ() {
+    void shouldCorrectGeneratePlainPatchJson() {
         try {
             var actualPatch = Differ.generate(pathJson1, pathJson2, "plain");
             Assertions.assertEquals(resultPlain, actualPatch);
@@ -115,7 +126,7 @@ class DifferTest {
 
     @Test
     @DisplayName("generate json")
-    void shouldCorrectGenerateJsonPatchJ() {
+    void shouldCorrectGenerateJsonPatchJson() {
         try {
             var actualPatch = Differ.generate(pathJson1, pathJson2, "json");
             Assertions.assertEquals(resultJson, actualPatch);
@@ -126,7 +137,7 @@ class DifferTest {
 
     @Test
     @DisplayName("generate должен бросить исключение если файла нет")
-    void shouldThrowExceptionFileNotExistJ() {
+    void shouldThrowExceptionFileNotExist() {
         try {
             Differ.generate("filetNotExisted.json", pathJson2);
             Assertions.fail();

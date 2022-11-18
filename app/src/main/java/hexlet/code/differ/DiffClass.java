@@ -1,5 +1,6 @@
 package hexlet.code.differ;
 
+import com.fasterxml.jackson.databind.node.MissingNode;
 import hexlet.code.Operation;
 
 import java.util.Objects;
@@ -22,11 +23,11 @@ public final class DiffClass {
     }
 
     public Operation getOperation() {
-        if (value1 == null) {
+        if (value1 == MissingNode.getInstance()) {
             return Operation.ADD;
         }
 
-        if (value2 == null) {
+        if (value2 == MissingNode.getInstance()) {
             return Operation.REMOVE;
         }
 
@@ -35,10 +36,5 @@ public final class DiffClass {
         }
 
         return Operation.UNCHAHGED;
-    }
-
-    @Override
-    public String toString() {
-        return "PairOfValues{" + "value1=" + value1 + ", value2=" + value2 + '}';
     }
 }

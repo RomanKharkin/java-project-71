@@ -29,7 +29,7 @@ public final class PlainFormatter implements Formatter {
                                     + " to "
                                     + valueToString(value2);
                         default:
-                            throw new RuntimeException("Неизвестная операция");
+                            throw new Error("Неизвестная операция: " + operation);
                     }
                 }).collect(Collectors.joining(delimiter));
 
