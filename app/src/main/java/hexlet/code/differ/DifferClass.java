@@ -13,15 +13,20 @@ import java.util.stream.Stream;
 
 public class DifferClass {
 
-    public static Map<String, DiffClass> getDifferences(String filePath1, String filePath2) throws Exception {
-        var map1 = getData(filePath1);
-        var map2 = getData(filePath2);
+    public static Map<String, DiffClass> getDifferences(Map<String, Object> map1, Map<String, Object> map2) {
         return Stream
                 .concat(map1.keySet().stream(), map2.keySet().stream())
                 .distinct()
                 .collect(Collectors.toMap(Function.identity(), (key) -> new DiffClass(
                         getNullWrapped(map1, key),
                         getNullWrapped(map2, key))));
+    }
+
+    public static Map<String, Object> getData(String fileName) throws Exception {
+        var format = getDataFormat(fileName);
+        var parser = Parsers.getParserByFormat(format);
+        var fileContent = getFileContent(fileName);
+        return parser.parse(fileContent);
     }
 
     private static Object getNullWrapped(Map<String, Object> map, String key) {
@@ -32,13 +37,6 @@ public class DifferClass {
             return NullNode.getInstance();
         }
         return map.get(key);
-    }
-
-    private static Map<String, Object> getData(String fileName) throws Exception {
-        var format = getDataFormat(fileName);
-        var parser = Parsers.getParserByFormat(format);
-        var fileContent = getFileContent(fileName);
-        return parser.parse(fileContent);
     }
 
     private static String getDataFormat(String fileName) {

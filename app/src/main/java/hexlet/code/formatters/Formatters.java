@@ -2,7 +2,7 @@ package hexlet.code.formatters;
 
 public class Formatters {
 
-    public static Formatter formatterFactory(String formatterName) throws Exception {
+    public static Formatter getFormatterByName(String formatterName) throws Exception {
         switch (formatterName) {
             case "plain":
                 return new PlainFormatter();
