@@ -12,7 +12,5 @@ public final class YmlParser implements Parser {
 
         ObjectMapper mapper = new YAMLMapper();
         return mapper.readValue(content, Map.class);
-
     }
-
 }

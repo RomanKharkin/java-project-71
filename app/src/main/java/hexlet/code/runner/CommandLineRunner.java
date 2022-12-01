@@ -23,12 +23,11 @@ public final class CommandLineRunner implements Runnable {
 
     @Override
     public void run() {
-        String diff = null;
         try {
-            diff = Differ.generate(filePath1, filePath2, formatterName);
+            String diff = Differ.generate(filePath1, filePath2, formatterName);
+            System.out.println(diff);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        System.out.println(diff);
     }
 }
